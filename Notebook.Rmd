@@ -1,0 +1,5 @@
+```{r}
+dataset = read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
+head(dataset)
+```
+
