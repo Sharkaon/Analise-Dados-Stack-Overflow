@@ -1,26 +1,37 @@
 ```{r}
 install.packages("rpart")
 library(rpart)
+install.packages("rpart.plot")
+library(rpart.plot)
 ```
 
 
 
 ```{r}
-dataset = read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
+dataset <- read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
 #head(dataset)
-columns = c("ConvertedCompYearly", "Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork")
-columns_for_future = c("LearnCode", "LanguageHaveWorkedWith", "PlatformHaveWorkedWith", "ToolstackHaveWorkedWith")
-dt = head(dataset[, columns], 1000)
+columns <- c("ConvertedCompYearly", "Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork")
+columns_for_future <- c("LearnCode", "LanguageHaveWorkedWith", "PlatformHaveWorkedWith", "ToolstackHaveWorkedWith")
+dt <- head(dataset[, columns], 100)
 dt
 ```
 
+# Criando a Arvore de decisao
 ```{r}
 modelo_salario <- rpart(ConvertedCompYearly~YearsCode+YearsCodePro+Country, 
                                   data=dt,
                                   method="class",
-                                  control=rpart.control(minsplit = 1, 
-                                                        xval = 5),
+                                  control=rpart.control(minsplit = 15,
+                                                        xval = 3),
                                   parms=list(split="Information"))
 ```
 
+```{r}
+modelo_salario
+```
 
+
+```{r}
+arvore_decisao <- rpart.plot(modelo_salario, type = 2)
+arvore_decisao
+```
