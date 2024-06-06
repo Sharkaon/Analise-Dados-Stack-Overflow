@@ -1,5 +1,25 @@
 ```{r}
+install.packages("rpart")
+library(rpart)
+```
+
+
+
+```{r}
 dataset = read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
 head(dataset)
+columns = c("Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork")
+columns_for_future = c("LearnCode", "LanguageHaveWorkedWith", "PlatformHaveWorkedWith", "ToolstackHaveWorkedWith")
+dt = head(dataset[, columns], 1000)
 ```
+
+```{r}
+modelo_salario <- rpart(ConvertedCompYearly~YearsCode+YearsCodePro+Country, 
+                                  data=dt,
+                                  method="class",
+                                  control=rpart.control(minsplit = 1, 
+                                                        xval = 5),
+                                  parms=list(split="Information"))
+```
+
 
