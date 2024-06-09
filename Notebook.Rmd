@@ -9,8 +9,8 @@ library(rpart.plot)
 ```{r}
 dataset = read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
 #head(dataset)
-columns = c("CompRange", "Country", "YearsCode", "YearsCodePro",
-           # "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork"
+columns = c("CompRange", "Country", "YearsCode", "YearsCodePro"
+            , "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork"
           )
 columns_for_future = c("LearnCode", "LanguageHaveWorkedWith", "PlatformHaveWorkedWith", "ToolstackHaveWorkedWith")
 ```
@@ -40,19 +40,64 @@ dataset_comp_range$CompRange[
 dataset_comp_range$CompRange = as.factor(dataset_comp_range$CompRange)
 dataset_comp_range
 ```
+```{r}
+# < 1
+# >= 1 < 3
+# >= 3 < 6
+# >= 6 < 10
+# >= 10 < 20
+# >= 20
+dataset_comp_range$YearsCode[
+  dataset$YearsCode >= 1 & dataset$YearsCode < 3
+] = ">= 1 and < 3"
+dataset_comp_range$YearsCode[
+  dataset$YearsCode >= 3 & dataset$YearsCode < 6
+] = ">= 3 and < 6"
+dataset_comp_range$YearsCode[
+  dataset$YearsCode >= 6 & dataset$YearsCode < 10
+] = ">= 6 and < 10"
+dataset_comp_range$YearsCode[
+  dataset$YearsCode >= 10 & dataset$YearsCode < 20
+] = ">= 10 and < 20"
+dataset_comp_range$YearsCode[
+  dataset$YearsCode >= 20
+] = ">= 20"
+dataset_comp_range$YearsCode = as.factor(dataset_comp_range$YearsCode)
+
+
+dataset_comp_range$YearsCodePro[
+  dataset$YearsCodePro >= 1 & dataset$YearsCodePro < 3
+] = ">= 1 and < 3"
+dataset_comp_range$YearsCodePro[
+  dataset$YearsCodePro >= 3 & dataset$YearsCodePro < 6
+] = ">= 3 and < 6"
+dataset_comp_range$YearsCodePro[
+  dataset$YearsCodePro >= 6 & dataset$YearsCodePro < 10
+] = ">= 6 and < 10"
+dataset_comp_range$YearsCodePro[
+  dataset$YearsCodePro >= 10 & dataset$YearsCodePro < 20
+] = ">= 10 and < 20"
+dataset_comp_range$YearsCodePro[
+  dataset$YearsCodePro >= 20
+] = ">= 20"
+dataset_comp_range$YearsCodePro = as.factor(dataset_comp_range$YearsCodePro)
+
+dataset_years_range = dataset_comp_range
+
+```
 
 
 ```{r}
-dt = head(dataset_comp_range[, columns], 200)
+dt = head(dataset_years_range[, columns], 100)
 dt
 ```
 
 
 ```{r}
-modelo_salario <- rpart(CompRange~YearsCode+YearsCodePro+Country, 
+modelo_salario <- rpart(CompRange~YearsCode+YearsCodePro+Country,
                                   data=dt,
                                   method="class",
-                                  control=rpart.control(minsplit = 1, 
+                                  control=rpart.control(minsplit = 3, 
                                                         xval = 5),
                                   parms=list(split="Information"))
 modelo_salario
