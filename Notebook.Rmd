@@ -1,26 +1,65 @@
 ```{r}
-install.packages("rpart")
+# install.packages("rpart")
 library(rpart)
+# install.packages("rpart.plot")
+library(rpart.plot)
 ```
-
 
 
 ```{r}
 dataset = read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
 #head(dataset)
-columns = c("ConvertedCompYearly", "Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork")
+columns = c("CompRange", "Country", "YearsCode", "YearsCodePro",
+           # "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork"
+          )
 columns_for_future = c("LearnCode", "LanguageHaveWorkedWith", "PlatformHaveWorkedWith", "ToolstackHaveWorkedWith")
-dt = head(dataset[, columns], 1000)
-dt
 ```
 
 ```{r}
-modelo_salario <- rpart(ConvertedCompYearly~YearsCode+YearsCodePro+Country, 
+# < 50_000
+# >= 50.000 < 200.000
+# >= 200.000 < 500.000
+# >= 500.000 < 1.000.000
+# >= 1.000.000
+dataset_comp_range = dataset
+dataset_comp_range$CompRange[
+  dataset_comp_range$ConvertedCompYearly < 50000
+] = "< $50.000"
+dataset_comp_range$CompRange[
+  dataset_comp_range$ConvertedCompYearly >= 50000 & dataset_comp_range$ConvertedCompYearly < 200000
+] = ">= $50.000 and < $200.000"
+dataset_comp_range$CompRange[
+  dataset_comp_range$ConvertedCompYearly >= 200000 & dataset_comp_range$ConvertedCompYearly < 500000
+] = ">= $200.000 and < $500.000"
+dataset_comp_range$CompRange[
+  dataset_comp_range$ConvertedCompYearly >= 500000 & dataset_comp_range$ConvertedCompYearly < 1000000
+] = ">= $500.000 and < $1.000.000"
+dataset_comp_range$CompRange[
+  dataset_comp_range$ConvertedCompYearly >= 1000000
+  ] = ">= $1.00.000"
+dataset_comp_range$CompRange = as.factor(dataset_comp_range$CompRange)
+dataset_comp_range
+```
+
+
+```{r}
+dt = head(dataset_comp_range[, columns], 200)
+dt
+```
+
+
+```{r}
+modelo_salario <- rpart(CompRange~YearsCode+YearsCodePro+Country, 
                                   data=dt,
                                   method="class",
                                   control=rpart.control(minsplit = 1, 
                                                         xval = 5),
                                   parms=list(split="Information"))
+modelo_salario
 ```
 
+```{r}
+arvore = rpart.plot(modelo_salario, type = 2)
+arvore
+```
 
