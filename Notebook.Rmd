@@ -7,14 +7,16 @@ library(rpart.plot)
 
 
 ```{r}
-dataset = read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
-#head(dataset)
+dataset <- read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
 columns = c("CompRange", "Country", "YearsCode", "YearsCodePro"
             , "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork"
           )
 columns_for_future = c("LearnCode", "LanguageHaveWorkedWith", "PlatformHaveWorkedWith", "ToolstackHaveWorkedWith")
+dt <- head(dataset[, columns], 100)
+dt
 ```
 
+# Transformando os dados em ranges
 ```{r}
 # < 50_000
 # >= 50.000 < 200.000
@@ -40,6 +42,7 @@ dataset_comp_range$CompRange[
 dataset_comp_range$CompRange = as.factor(dataset_comp_range$CompRange)
 dataset_comp_range
 ```
+
 ```{r}
 # < 1
 # >= 1 < 3
@@ -83,7 +86,6 @@ dataset_comp_range$YearsCodePro[
 dataset_comp_range$YearsCodePro = as.factor(dataset_comp_range$YearsCodePro)
 
 dataset_years_range = dataset_comp_range
-
 ```
 
 
@@ -93,6 +95,7 @@ dt
 ```
 
 
+# Criando a Arvore de decisao
 ```{r}
 modelo_salario <- rpart(CompRange~YearsCode+YearsCodePro+Country,
                                   data=dt,
@@ -104,7 +107,6 @@ modelo_salario
 ```
 
 ```{r}
-arvore = rpart.plot(modelo_salario, type = 2)
-arvore
+arvore_decisao <- rpart.plot(modelo_salario, type = 2)
+arvore_decisao
 ```
-
