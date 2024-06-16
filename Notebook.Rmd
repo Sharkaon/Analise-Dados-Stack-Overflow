@@ -63,37 +63,13 @@ dataset_comp_range$LearnCode <- as.array(dataset_comp_range$LearnCode)
 dataset_comp_range$LanguageHaveWorkedWith <- as.array(dataset_comp_range$LanguageHaveWorkedWith)
 ```
 
-
-# Criando graficos
-```{r}
-
-
-# frequencias_country <- table(dataset_comp_range$Country)
-# frequencias_country_ordenada <- sort(frequencias_country, decreasing = TRUE)
-# dez_mais_frequentes <- head(frequencias_country, 10)
-#
-# frequencias_acumuladas <- cumsum(dez_mais_frequentes)
-#
-# # Identifique o índice onde a frequência acumulada atinge 80%
-# indice_80 <- which(frequencias_acumuladas/sum(dez_mais_frequentes) >= 0.8)
-#
-# # Selecione os países correspondentes ao índice filtrado
-# paises_80_porcento <- names(dez_mais_frequentes)[indice_80]
-#
-# # Exiba os resultados
-# print(paises_80_porcento)
-# plot(dez_mais_frequentes)
-```
-
-
-
 # Criando a Arvore de decisao
 ```{r}
 datasetTree <- head(dataset_comp_range, limit)
 modelo_salario <- rpart(ConvertedCompYearly~YearsCodePro+OrgSize+Country,
                                   data=datasetTree,
                                   method="class",
-                                  control=rpart.control(minsplit = 5,
+                                  control=rpart.control(minsplit = 7,
                                                         xval = 5),
                                   parms=list(split="Information"))
 modelo_salario
