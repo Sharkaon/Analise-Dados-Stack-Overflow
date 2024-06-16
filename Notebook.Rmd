@@ -6,13 +6,18 @@ library(rpart)
 library(rpart.plot)
 # install.packages("dplyr")
 library(dplyr)
+# install.packages("outliers")
+library(outliers)
+# install.packages("base")
+library(base)
+# install.packages("base")
+library(ggplot2)
 ```
 
 # Carregando os dados
 ```{r}
 datasetOriginal <- read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
-columns = c("CompRange", "Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork")
-columns_for_future = c("LearnCode", "LanguageHaveWorkedWith", "PlatformHaveWorkedWith", "ToolstackHaveWorkedWith")
+columns <- c("CompRange", "Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "LearnCode", "LanguageHaveWorkedWith")
 ```
 
 # Populando YearsCodePro com o valor de YearsCode, caso YearsCodePro seja NA
@@ -30,37 +35,34 @@ datasetOriginal$YearsCodePro <- ifelse(is.na(datasetOriginal$YearsCodePro), data
 # >= 200.000 < 250.000
 # >= 250.000 < 300.000
 # >= 300.000
-dataset_comp_range = datasetOriginal
+dataset_comp_range <- datasetOriginal
 dataset_comp_range$CompRange[
   dataset_comp_range$ConvertedCompYearly < 12500
-] = "< 12.500"
+] <- "< 12.500"
 dataset_comp_range$CompRange[
   dataset_comp_range$ConvertedCompYearly >= 12500 & dataset_comp_range$ConvertedCompYearly < 50000
-] = ">= $25.000 and < $50.000"
+] <- ">= $25.000 and < $50.000"
 dataset_comp_range$CompRange[
   dataset_comp_range$ConvertedCompYearly >= 25000 & dataset_comp_range$ConvertedCompYearly < 50000
-] = ">= $25.000 and < $50.000"
+] <- ">= $25.000 and < $50.000"
 dataset_comp_range$CompRange[
   dataset_comp_range$ConvertedCompYearly >= 50000 & dataset_comp_range$ConvertedCompYearly < 100000
-] = ">= $50.000 and < $100.000"
+] <- ">= $50.000 and < $100.000"
 dataset_comp_range$CompRange[
   dataset_comp_range$ConvertedCompYearly >= 100000 & dataset_comp_range$ConvertedCompYearly < 150000
-] = ">= $100.000 and < $150.000"
+    ] <- ">= $100.000 and < $150.000"
 dataset_comp_range$CompRange[
   dataset_comp_range$ConvertedCompYearly >= 150000 & dataset_comp_range$ConvertedCompYearly < 200000
-] = ">= $150.000 and < $200.000"
+] <- ">= $150.000 and < $200.000"
 dataset_comp_range$CompRange[
   dataset_comp_range$ConvertedCompYearly >= 200000 & dataset_comp_range$ConvertedCompYearly < 250000
-] = ">= $200.000 and < $250.000"
+] <- ">= $200.000 and < $250.000"
 dataset_comp_range$CompRange[
   dataset_comp_range$ConvertedCompYearly >= 250000 & dataset_comp_range$ConvertedCompYearly < 300000
-] = ">= $250.000 and < $300.000"
+] <- ">= $250.000 and < $300.000"
 dataset_comp_range$CompRange[
   dataset_comp_range$ConvertedCompYearly >= 300000
-] = ">= 300.000"
-dataset_comp_range$CompRange = as.factor(dataset_comp_range$CompRange)
-dataset_comp_range$OrgSize = as.factor(dataset_comp_range$OrgSize)
-dataset_comp_range
+] <- ">= 300.000"
 ```
 
 ```{r}
@@ -70,45 +72,77 @@ dataset_comp_range
 # >= 6 < 10
 # >= 10 < 20
 # >= 20
-dataset_comp_range$YearsCode[
-  datasetOriginal$YearsCode >= 1 & datasetOriginal$YearsCode < 3
-] = ">= 1 and < 3"
-dataset_comp_range$YearsCode[
-  datasetOriginal$YearsCode >= 3 & datasetOriginal$YearsCode < 6
-] = ">= 3 and < 6"
-dataset_comp_range$YearsCode[
-  datasetOriginal$YearsCode >= 6 & datasetOriginal$YearsCode < 10
-] = ">= 6 and < 10"
-dataset_comp_range$YearsCode[
-  datasetOriginal$YearsCode >= 10 & datasetOriginal$YearsCode < 20
-] = ">= 10 and < 20"
-dataset_comp_range$YearsCode[
-  datasetOriginal$YearsCode >= 20
-] = ">= 20"
-dataset_comp_range$YearsCode = as.factor(dataset_comp_range$YearsCode)
-
+dataset_comp_range$YearsCodePro[
+  datasetOriginal$YearsCodePro == "Less than 1 year"
+] <- "> 1"
 dataset_comp_range$YearsCodePro[
   datasetOriginal$YearsCodePro >= 1 & datasetOriginal$YearsCodePro < 3
-] = ">= 1 and < 3"
+] <- ">= 1 and < 3"
 dataset_comp_range$YearsCodePro[
   datasetOriginal$YearsCodePro >= 3 & datasetOriginal$YearsCodePro < 6
-] = ">= 3 and < 6"
+] <- ">= 3 and < 6"
 dataset_comp_range$YearsCodePro[
   datasetOriginal$YearsCodePro >= 6 & datasetOriginal$YearsCodePro < 10
-] = ">= 6 and < 10"
+] <- ">= 6 and < 10"
 dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 10 & datasetOriginal$YearsCodePro < 20
-] = ">= 10 and < 20"
+  datasetOriginal$YearsCodePro >= 10 & datasetOriginal$YearsCodePro < 13
+] <- ">= 10 and < 13"
 dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 20
-] = ">= 20"
-dataset_comp_range$YearsCodePro = as.factor(dataset_comp_range$YearsCodePro)
+  datasetOriginal$YearsCodePro >= 13 & datasetOriginal$YearsCodePro < 16
+] <- ">= 13 and < 16"
+dataset_comp_range$YearsCodePro[
+  datasetOriginal$YearsCodePro >= 16 & datasetOriginal$YearsCodePro < 19
+] <- ">= 16 and < 19"
+dataset_comp_range$YearsCodePro[
+  datasetOriginal$YearsCodePro >= 19 & datasetOriginal$YearsCodePro < 22
+] <- ">= 19 and < 22"
+dataset_comp_range$YearsCodePro[
+  datasetOriginal$YearsCodePro >= 22
+] <- ">= 22"
 ```
+# Limpando colunas
+```{r}
+dataset_comp_range <- head(dataset_comp_range[, columns], nrow(dataset_comp_range))
+dataset_comp_range <- na.omit(dataset_comp_range)
+```
+
+# Transformando os dados em categorias
+```{r}
+dataset_comp_range$CompRange <- as.factor(dataset_comp_range$CompRange)
+dataset_comp_range$OrgSize <- as.factor(dataset_comp_range$OrgSize)
+dataset_comp_range$YearsCodePro <- as.factor(dataset_comp_range$YearsCodePro)
+dataset_comp_range$YearsCode <- as.factor(dataset_comp_range$YearsCode)
+dataset_comp_range$Country <- as.factor(dataset_comp_range$Country)
+dataset_comp_range$LearnCode <- as.array(dataset_comp_range$LearnCode)
+dataset_comp_range$LanguageHaveWorkedWith <- as.array(dataset_comp_range$LanguageHaveWorkedWith)
+```
+
+
+# Criando graficos
+```{r}
+
+
+# frequencias_country <- table(dataset_comp_range$Country)
+# frequencias_country_ordenada <- sort(frequencias_country, decreasing = TRUE)
+# dez_mais_frequentes <- head(frequencias_country, 10)
+#
+# frequencias_acumuladas <- cumsum(dez_mais_frequentes)
+#
+# # Identifique o índice onde a frequência acumulada atinge 80%
+# indice_80 <- which(frequencias_acumuladas/sum(dez_mais_frequentes) >= 0.8)
+#
+# # Selecione os países correspondentes ao índice filtrado
+# paises_80_porcento <- names(dez_mais_frequentes)[indice_80]
+#
+# # Exiba os resultados
+# print(paises_80_porcento)
+# plot(dez_mais_frequentes)
+```
+
 
 # Criando dataset para a arvore e removendo os valores nulos
 ```{r}
-dataset_comp_range <- head(dataset_comp_range[, columns], nrow(dataset_comp_range))
-datasetTree <- head(na.omit(dataset_comp_range)[, c(1,3,4,2,5)], 100)
+datasetTree <- head(dataset_comp_range[, c(1,3,4,2,5)], 100)
 ```
 
 
