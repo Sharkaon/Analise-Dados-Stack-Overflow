@@ -12,13 +12,21 @@ library(outliers)
 library(base)
 # install.packages("base")
 library(ggplot2)
+# install.packages("santoku")
+library(santoku)
 ```
 
 # Carregando os dados
 ```{r}
 datasetOriginal <- read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
-columns <- c("CompRange", "Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "LearnCode", "LanguageHaveWorkedWith")
 ```
+
+# Definindo constantes
+```{r}
+columns <- c("CompRange", "Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "LearnCode", "LanguageHaveWorkedWith")
+limit <- 50
+```
+
 
 # Populando YearsCodePro com o valor de YearsCode, caso YearsCodePro seja NA
 ```{r}
@@ -35,34 +43,42 @@ datasetOriginal$YearsCodePro <- ifelse(is.na(datasetOriginal$YearsCodePro), data
 # >= 200.000 < 250.000
 # >= 250.000 < 300.000
 # >= 300.000
-dataset_comp_range <- datasetOriginal
-dataset_comp_range$CompRange[
-  dataset_comp_range$ConvertedCompYearly < 12500
-] <- "< 12.500"
-dataset_comp_range$CompRange[
-  dataset_comp_range$ConvertedCompYearly >= 12500 & dataset_comp_range$ConvertedCompYearly < 50000
-] <- ">= $25.000 and < $50.000"
-dataset_comp_range$CompRange[
-  dataset_comp_range$ConvertedCompYearly >= 25000 & dataset_comp_range$ConvertedCompYearly < 50000
-] <- ">= $25.000 and < $50.000"
-dataset_comp_range$CompRange[
-  dataset_comp_range$ConvertedCompYearly >= 50000 & dataset_comp_range$ConvertedCompYearly < 100000
-] <- ">= $50.000 and < $100.000"
-dataset_comp_range$CompRange[
-  dataset_comp_range$ConvertedCompYearly >= 100000 & dataset_comp_range$ConvertedCompYearly < 150000
-    ] <- ">= $100.000 and < $150.000"
-dataset_comp_range$CompRange[
-  dataset_comp_range$ConvertedCompYearly >= 150000 & dataset_comp_range$ConvertedCompYearly < 200000
-] <- ">= $150.000 and < $200.000"
-dataset_comp_range$CompRange[
-  dataset_comp_range$ConvertedCompYearly >= 200000 & dataset_comp_range$ConvertedCompYearly < 250000
-] <- ">= $200.000 and < $250.000"
-dataset_comp_range$CompRange[
-  dataset_comp_range$ConvertedCompYearly >= 250000 & dataset_comp_range$ConvertedCompYearly < 300000
-] <- ">= $250.000 and < $300.000"
-dataset_comp_range$CompRange[
-  dataset_comp_range$ConvertedCompYearly >= 300000
-] <- ">= 300.000"
+# dataset_comp_range <- datasetOriginal
+# dataset_comp_range$CompRange[
+#   dataset_comp_range$ConvertedCompYearly < 12500
+# ] <- "< 12.500"
+# dataset_comp_range$CompRange[
+#   dataset_comp_range$ConvertedCompYearly >= 12500 & dataset_comp_range$ConvertedCompYearly < 50000
+# ] <- ">= $25.000 and < $50.000"
+# dataset_comp_range$CompRange[
+#   dataset_comp_range$ConvertedCompYearly >= 25000 & dataset_comp_range$ConvertedCompYearly < 50000
+# ] <- ">= $25.000 and < $50.000"
+# dataset_comp_range$CompRange[
+#   dataset_comp_range$ConvertedCompYearly >= 50000 & dataset_comp_range$ConvertedCompYearly < 100000
+# ] <- ">= $50.000 and < $100.000"
+# dataset_comp_range$CompRange[
+#   dataset_comp_range$ConvertedCompYearly >= 100000 & dataset_comp_range$ConvertedCompYearly < 150000
+#     ] <- ">= $100.000 and < $150.000"
+# dataset_comp_range$CompRange[
+#   dataset_comp_range$ConvertedCompYearly >= 150000 & dataset_comp_range$ConvertedCompYearly < 200000
+# ] <- ">= $150.000 and < $200.000"
+# dataset_comp_range$CompRange[
+#   dataset_comp_range$ConvertedCompYearly >= 200000 & dataset_comp_range$ConvertedCompYearly < 250000
+# ] <- ">= $200.000 and < $250.000"
+# dataset_comp_range$CompRange[
+#   dataset_comp_range$ConvertedCompYearly >= 250000 & dataset_comp_range$ConvertedCompYearly < 300000
+# ] <- ">= $250.000 and < $300.000"
+# dataset_comp_range$CompRange[
+#   dataset_comp_range$ConvertedCompYearly >= 300000
+# ] <- ">= 300.000"
+dataset_comp_range = datasetTree
+dataset_comp_range$ConvertedCompYearly[
+  dataset_comp_range$ConvertedCompYearly == "Less than 1 year"
+] = 1
+dataset_comp_range$ConvertedCompYearly = cut_number(df$ConvertedCompYearly, 6)
+dataset_comp_range$ConvertedCompYearly = as.factor(dataset_comp_range$ConvertedCompYearly)
+dataset_comp_range$OrgSize = as.factor(dataset_comp_range$OrgSize)
+dataset_comp_range
 ```
 
 ```{r}
@@ -140,15 +156,12 @@ dataset_comp_range$LanguageHaveWorkedWith <- as.array(dataset_comp_range$Languag
 ```
 
 
-# Criando dataset para a arvore e removendo os valores nulos
-```{r}
-datasetTree <- head(dataset_comp_range[, c(1,3,4,2,5)], 100)
-```
 
 
 # Criando a Arvore de decisao
 ```{r}
-modelo_salario <- rpart(CompRange~YearsCode+YearsCodePro+Country,
+datasetTree <- head(dataset_comp_range, limit)
+modelo_salario <- rpart(ConvertedCompYearly~YearsCode+YearsCodePro+Country,
                                   data=datasetTree,
                                   method="class",
                                   control=rpart.control(minsplit = 3, 
