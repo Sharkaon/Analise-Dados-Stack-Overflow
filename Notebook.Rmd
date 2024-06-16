@@ -24,6 +24,7 @@ datasetOriginal <- read.csv2('./datasets/survey_results_public.csv', header = TR
 # Definindo constantes
 ```{r}
 columns <- c("CompRange", "Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "LearnCode", "LanguageHaveWorkedWith")
+# Limit para sample para que a execução da árvore não fique muito pesada
 limit <- 50
 ```
 
@@ -63,6 +64,7 @@ dataset_comp_range$LearnCode <- as.array(dataset_comp_range$LearnCode)
 dataset_comp_range$LanguageHaveWorkedWith <- as.array(dataset_comp_range$LanguageHaveWorkedWith)
 ```
 
+
 # Criando a Arvore de decisao
 ```{r}
 datasetTree <- head(dataset_comp_range, limit)
@@ -75,6 +77,8 @@ modelo_salario <- rpart(ConvertedCompYearly~YearsCodePro+OrgSize+Country,
 modelo_salario
 ```
 
+
+# Plot da Árvore
 ```{r}
 arvore_decisao <- rpart.plot(modelo_salario, type = 2)
 arvore_decisao
