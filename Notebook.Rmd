@@ -31,100 +31,30 @@ limit <- 50
 # Populando YearsCodePro com o valor de YearsCode, caso YearsCodePro seja NA
 ```{r}
 datasetOriginal$YearsCodePro <- ifelse(is.na(datasetOriginal$YearsCodePro), datasetOriginal$YearsCode, datasetOriginal$YearsCodePro)
+datasetOriginal <- head(datasetOriginal[, c("Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "LearnCode", "LanguageHaveWorkedWith", "ConvertedCompYearly")], nrow(datasetOriginal))
+datasetOriginal <- na.omit(datasetOriginal)
 ```
 
 # Transformando os dados em ranges
 ```{r}
-# < 25.000
-# >= 25.000 < 50.000
-# >= 50.000 < 100.000
-# >= 100.000 < 150.000
-# >= 150.000 < 200.000
-# >= 200.000 < 250.000
-# >= 250.000 < 300.000
-# >= 300.000
-# dataset_comp_range <- datasetOriginal
-# dataset_comp_range$CompRange[
-#   dataset_comp_range$ConvertedCompYearly < 12500
-# ] <- "< 12.500"
-# dataset_comp_range$CompRange[
-#   dataset_comp_range$ConvertedCompYearly >= 12500 & dataset_comp_range$ConvertedCompYearly < 50000
-# ] <- ">= $25.000 and < $50.000"
-# dataset_comp_range$CompRange[
-#   dataset_comp_range$ConvertedCompYearly >= 25000 & dataset_comp_range$ConvertedCompYearly < 50000
-# ] <- ">= $25.000 and < $50.000"
-# dataset_comp_range$CompRange[
-#   dataset_comp_range$ConvertedCompYearly >= 50000 & dataset_comp_range$ConvertedCompYearly < 100000
-# ] <- ">= $50.000 and < $100.000"
-# dataset_comp_range$CompRange[
-#   dataset_comp_range$ConvertedCompYearly >= 100000 & dataset_comp_range$ConvertedCompYearly < 150000
-#     ] <- ">= $100.000 and < $150.000"
-# dataset_comp_range$CompRange[
-#   dataset_comp_range$ConvertedCompYearly >= 150000 & dataset_comp_range$ConvertedCompYearly < 200000
-# ] <- ">= $150.000 and < $200.000"
-# dataset_comp_range$CompRange[
-#   dataset_comp_range$ConvertedCompYearly >= 200000 & dataset_comp_range$ConvertedCompYearly < 250000
-# ] <- ">= $200.000 and < $250.000"
-# dataset_comp_range$CompRange[
-#   dataset_comp_range$ConvertedCompYearly >= 250000 & dataset_comp_range$ConvertedCompYearly < 300000
-# ] <- ">= $250.000 and < $300.000"
-# dataset_comp_range$CompRange[
-#   dataset_comp_range$ConvertedCompYearly >= 300000
-# ] <- ">= 300.000"
 dataset_comp_range <- datasetOriginal
 dataset_comp_range$ConvertedCompYearly[
   dataset_comp_range$ConvertedCompYearly == "Less than 1 year"
-] = 1
-dataset_comp_range$ConvertedCompYearly = cut_number(df$ConvertedCompYearly, 6)
-dataset_comp_range$ConvertedCompYearly = as.factor(dataset_comp_range$ConvertedCompYearly)
-dataset_comp_range$OrgSize = as.factor(dataset_comp_range$OrgSize)
-dataset_comp_range
+] <- 1
+dataset_comp_range$ConvertedCompYearly <- chop_equally(dataset_comp_range$ConvertedCompYearly, 10, raw = FALSE)
+
+dataset_comp_range$YearsCodePro[
+  dataset_comp_range$YearsCodePro == "Less than 1 year"
+] <- "1"
+dataset_comp_range$YearsCodePro <- as.numeric(dataset_comp_range$YearsCodePro)
+dataset_comp_range$YearsCodePro <- chop_equally(dataset_comp_range$YearsCodePro, 10, raw = TRUE)
+
 ```
 
-```{r}
-# < 1
-# >= 1 < 3
-# >= 3 < 6
-# >= 6 < 10
-# >= 10 < 20
-# >= 20
-dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro == "Less than 1 year"
-] <- "> 1"
-dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 1 & datasetOriginal$YearsCodePro < 3
-] <- ">= 1 and < 3"
-dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 3 & datasetOriginal$YearsCodePro < 6
-] <- ">= 3 and < 6"
-dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 6 & datasetOriginal$YearsCodePro < 10
-] <- ">= 6 and < 10"
-dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 10 & datasetOriginal$YearsCodePro < 13
-] <- ">= 10 and < 13"
-dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 13 & datasetOriginal$YearsCodePro < 16
-] <- ">= 13 and < 16"
-dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 16 & datasetOriginal$YearsCodePro < 19
-] <- ">= 16 and < 19"
-dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 19 & datasetOriginal$YearsCodePro < 22
-] <- ">= 19 and < 22"
-dataset_comp_range$YearsCodePro[
-  datasetOriginal$YearsCodePro >= 22
-] <- ">= 22"
-```
-# Limpando colunas
-```{r}
-dataset_comp_range <- head(dataset_comp_range[, columns], nrow(dataset_comp_range))
-dataset_comp_range <- na.omit(dataset_comp_range)
-```
 
 # Transformando os dados em categorias
 ```{r}
-dataset_comp_range$CompRange <- as.factor(dataset_comp_range$CompRange)
+dataset_comp_range$ConvertedCompYearly <- as.factor(dataset_comp_range$ConvertedCompYearly)
 dataset_comp_range$OrgSize <- as.factor(dataset_comp_range$OrgSize)
 dataset_comp_range$YearsCodePro <- as.factor(dataset_comp_range$YearsCodePro)
 dataset_comp_range$YearsCode <- as.factor(dataset_comp_range$YearsCode)
@@ -160,10 +90,10 @@ dataset_comp_range$LanguageHaveWorkedWith <- as.array(dataset_comp_range$Languag
 # Criando a Arvore de decisao
 ```{r}
 datasetTree <- head(dataset_comp_range, limit)
-modelo_salario <- rpart(ConvertedCompYearly~YearsCode+YearsCodePro+Country,
+modelo_salario <- rpart(ConvertedCompYearly~YearsCodePro+OrgSize+Country,
                                   data=datasetTree,
                                   method="class",
-                                  control=rpart.control(minsplit = 3, 
+                                  control=rpart.control(minsplit = 5,
                                                         xval = 5),
                                   parms=list(split="Information"))
 modelo_salario
