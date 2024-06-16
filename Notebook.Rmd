@@ -71,7 +71,7 @@ datasetOriginal$YearsCodePro <- ifelse(is.na(datasetOriginal$YearsCodePro), data
 # dataset_comp_range$CompRange[
 #   dataset_comp_range$ConvertedCompYearly >= 300000
 # ] <- ">= 300.000"
-dataset_comp_range = datasetTree
+dataset_comp_range <- datasetOriginal
 dataset_comp_range$ConvertedCompYearly[
   dataset_comp_range$ConvertedCompYearly == "Less than 1 year"
 ] = 1
@@ -154,7 +154,6 @@ dataset_comp_range$LanguageHaveWorkedWith <- as.array(dataset_comp_range$Languag
 # print(paises_80_porcento)
 # plot(dez_mais_frequentes)
 ```
-
 
 
 
