@@ -1,0 +1,91 @@
+# Instalando os pacotes
+```{r}
+# install.packages("rpart")
+library(rpart)
+# install.packages("rpart.plot")
+library(rpart.plot)
+# install.packages("dplyr")
+library(dplyr)
+# install.packages("outliers")
+library(outliers)
+# install.packages("base")
+library(base)
+# install.packages("base")
+library(ggplot2)
+# install.packages("santoku")
+library(santoku)
+```
+
+# Carregando os dados
+```{r}
+datasetOriginal <- read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
+```
+
+# Definindo constantes
+```{r}
+columns <- c("Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "LearnCode", "LanguageHaveWorkedWith", "ConvertedCompYearly")
+# Limit para sample para que a execução da árvore não fique muito pesada
+limit <- 50
+```
+
+
+# Populando YearsCodePro com o valor de YearsCode, caso YearsCodePro seja NA
+```{r}
+datasetOriginal$YearsCodePro <- ifelse(is.na(datasetOriginal$YearsCodePro), datasetOriginal$YearsCode, datasetOriginal$YearsCodePro)
+datasetOriginal$YearsCodePro <- as.factor(datasetOriginal$YearsCodePro)
+datasetOriginal$YearsCodePro <- ifelse(datasetOriginal$YearsCodePro == "Less than 1 year", 0.5, datasetOriginal$YearsCodePro)
+datasetOriginal$YearsCodePro <- ifelse(datasetOriginal$YearsCodePro == "More than 50 years", 51, datasetOriginal$YearsCodePro)
+
+datasetOriginal <- head(datasetOriginal[, columns], nrow(datasetOriginal))
+datasetOriginal <- na.omit(datasetOriginal)
+```
+
+# Filtrando os países que representam 80% das respostas
+```{r}
+df_limpo <- datasetOriginal
+# Criando tabela de frequencias e ordenando a tabela de forma decrescente
+frequencias_country <- sort(table(df_limpo$Country), decreasing = TRUE)
+# Identifique o índice onde a frequência acumulada atinge 80%
+index_80 <- which(cumsum(frequencias_country) / sum(frequencias_country) <= 0.8)
+# Selecione os países correspondentes ao índice filtrado
+paises_80_porcento <- names(cumsum(frequencias_country))[index_80]
+# Filtrar os países que estão no top 80%
+df_limpo <- filter(df_limpo, Country %in% paises_80_porcento)
+
+```
+
+# Remover outliers
+```{r}
+
+# Remover outliers extremamento altos e os moderados baixos
+Q <- quantile(df_limpo$ConvertedCompYearly, probs=c(.01, .98), na.rm = FALSE)
+iqr <- IQR(df_limpo$ConvertedCompYearly)
+# up <-  Q[2]+3*iqr # Upper Range
+up <-  Q[2] # Upper Range
+# low <- Q[1]-1.5*iqr # Lower Range
+low <- Q[1] # Lower Range
+
+df_limpo <- subset(df_limpo, df_limpo$ConvertedCompYearly > low & df_limpo$ConvertedCompYearly < up)
+
+```
+
+# Transformando os dados em categorias
+```{r}
+df_limpo$ConvertedCompYearly <- as.integer(df_limpo$ConvertedCompYearly)
+df_limpo$YearsCode <- as.integer(df_limpo$YearsCode)
+df_limpo$YearsCodePro <- as.integer(df_limpo$YearsCodePro)
+df_limpo$OrgSize <- as.factor(df_limpo$OrgSize)
+df_limpo$DevType <- as.factor(df_limpo$DevType)
+df_limpo$EdLevel <- as.factor(df_limpo$EdLevel)
+df_limpo$Age <- as.factor(df_limpo$Age)
+df_limpo$WorkExp <- as.integer(df_limpo$WorkExp)
+df_limpo$RemoteWork <- as.factor(df_limpo$RemoteWork)
+df_limpo$Country <- as.factor(df_limpo$Country)
+df_limpo$LearnCode <- as.array(df_limpo$LearnCode)
+df_limpo$LanguageHaveWorkedWith <- as.array(df_limpo$LanguageHaveWorkedWith)
+```
+
+# Remover os NA
+```{r}
+df_limpo <- na.omit(df_limpo)
+```
