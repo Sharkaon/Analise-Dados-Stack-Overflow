@@ -1,0 +1,100 @@
+# Instalando os pacotes
+```{r}
+# install.packages("rpart")
+library(rpart)
+# install.packages("rpart.plot")
+library(rpart.plot)
+# install.packages("dplyr")
+library(dplyr)
+# install.packages("outliers")
+library(outliers)
+# install.packages("base")
+library(base)
+# install.packages("base")
+library(ggplot2)
+# install.packages("santoku")
+library(santoku)
+# install.packages("ggstatsplot")
+library(ggstatsplot)
+# install.packages("insight")
+library(insight)
+
+```
+
+# Carregando os dados
+```{r}
+datasetOriginal <- read.csv2('./datasets/survey_results_public.csv', header = TRUE, sep = ',')
+```
+
+# Removendo colunas não usadas
+```{r}
+columns <- c("Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "ConvertedCompYearly")
+df_original_est <- datasetOriginal[, columns]
+```
+
+
+# Transformando os dados em categorias
+```{r}
+df_original_est$ConvertedCompYearly <- as.integer(df_original_est$ConvertedCompYearly)
+df_original_est$YearsCode <- as.integer(df_original_est$YearsCode)
+df_original_est$YearsCodePro <- as.integer(df_original_est$YearsCodePro)
+df_original_est$OrgSize <- as.factor(df_original_est$OrgSize)
+df_original_est$DevType <- as.factor(df_original_est$DevType)
+df_original_est$EdLevel <- as.factor(df_original_est$EdLevel)
+df_original_est$Age <- as.factor(df_original_est$Age)
+df_original_est$WorkExp <- as.integer(df_original_est$WorkExp)
+df_original_est$RemoteWork <- as.factor(df_original_est$RemoteWork)
+df_original_est$Country <- as.factor(df_original_est$Country)
+```
+
+# Coletando estatisticas do data set original
+```{r}
+quantidade_linhas <-nrow(datasetOriginal)
+quantidade_colunas <- ncol(datasetOriginal)
+quantidade_paises <- n_unique(datasetOriginal$Country)
+quantidade_linhas
+quantidade_colunas
+quantidade_paises
+```
+
+```{r}
+
+df_plot_this <- datasetOriginal
+df_plot_this$YearsCode <- ifelse(df_plot_this$YearsCode == "Less than 1 year", 0.5, df_plot_this$YearsCode)
+df_plot_this$YearsCode <- ifelse(df_plot_this$YearsCode == "More than 50 years", 51, df_plot_this$YearsCode)
+df_plot_this$YearsCodePro <- ifelse(df_plot_this$YearsCodePro == "Less than 1 year", 0.5, df_plot_this$YearsCodePro)
+df_plot_this$YearsCodePro <- ifelse(df_plot_this$YearsCodePro == "More than 50 years", 51, df_plot_this$YearsCodePro)
+df_plot_this$YearsCodePro <- as.integer(df_plot_this$YearsCodePro)
+df_plot_this$YearsCode <- as.integer(df_plot_this$YearsCode)
+
+
+ggplot(df_plot_this) +
+  geom_boxplot(aes(, y=YearsCode)) +
+  ggplot(df_plot_this) +
+  geom_boxplot(aes(, y=YearsCodePro)) +
+  ggplot(df_plot_this) +
+  geom_boxplot(aes(, y=ConvertedCompYearly))
+```
+
+```{r}
+summary(df_original_est)
+```
+
+####################################################################################
+####################################################################################
+######################## DADOS UTILIZANDO O DATASET LIMPO ##########################
+####################################################################################
+####################################################################################
+
+
+
+# Montar graficos
+```{r}
+ggplot(df_limpo, aes(ConvertedCompYearly, YearsCodePro)) +
+  geom_point(aes(col=Country), size=1)
+ggplot(df_limpo, aes(ConvertedCompYearly, YearsCodePro)) +
+  geom_point(aes(col=OrgSize), size=1)
+ggplot(df_limpo, aes(ConvertedCompYearly, YearsCodePro)) +
+  geom_point(aes(col=Age), size=1)
+
+```
