@@ -87,18 +87,18 @@ df_limpo$Country <- as.factor(df_limpo$Country)
 # Transformando os intervalos em numeros
 ```{r}
 
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "I don’t know"] <- "0"
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "2 to 9 employees"] <- "1"
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "10 to 19 employees"] <- "2"
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "20 to 99 employees"] <- "3"
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "100 to 499 employees"] <- "4"
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "500 to 999 employees"] <- "5"
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "1,000 to 4,999 employees"] <- "6"
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "5,000 to 9,999 employees"] <- "7"
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "10,000 or more employees"] <- "8"
-df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "Just me - I am a freelancer, sole proprietor, etc."] <- "9"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "I don’t know"] <- "0"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "2 to 9 employees"] <- "1"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "10 to 19 employees"] <- "2"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "20 to 99 employees"] <- "3"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "100 to 499 employees"] <- "4"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "500 to 999 employees"] <- "5"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "1,000 to 4,999 employees"] <- "6"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "5,000 to 9,999 employees"] <- "7"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "10,000 or more employees"] <- "8"
+df_limpo$OrgSizeNum[df_limpo$OrgSize == "Just me - I am a freelancer, sole proprietor, etc."] <- "9"
 
-df_limpo_est$OrgSizeNum <- as.integer(df_limpo_est$OrgSizeNum)
+df_limpo$OrgSizeNum <- as.integer(df_limpo$OrgSizeNum)
 ```
 
 # Remover os NA
