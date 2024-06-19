@@ -40,8 +40,6 @@ dataset_comp_range$YearsCodePro <- as.factor(dataset_comp_range$YearsCodePro)
 dataset_comp_range$YearsCode <- as.factor(dataset_comp_range$YearsCode)
 dataset_comp_range$Country <- as.factor(dataset_comp_range$Country)
 dataset_comp_range$RemoteWork <- as.factor(dataset_comp_range$RemoteWork)
-dataset_comp_range$LearnCode <- as.array(dataset_comp_range$LearnCode)
-dataset_comp_range$LanguageHaveWorkedWith <- as.array(dataset_comp_range$LanguageHaveWorkedWith)
 ```
 
 # Criando a Arvore de decisao

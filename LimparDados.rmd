@@ -23,7 +23,7 @@ datasetOriginal <- read.csv2('./datasets/survey_results_public.csv', header = TR
 
 # Definindo constantes
 ```{r}
-columns <- c("Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "LearnCode", "LanguageHaveWorkedWith", "ConvertedCompYearly")
+columns <- c("Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "ConvertedCompYearly")
 # Limit para sample para que a execução da árvore não fique muito pesada
 limit <- 50
 ```
