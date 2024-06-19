@@ -35,6 +35,7 @@ datasetOriginal$YearsCodePro <- ifelse(is.na(datasetOriginal$YearsCodePro), data
 datasetOriginal$YearsCodePro <- as.factor(datasetOriginal$YearsCodePro)
 datasetOriginal$YearsCodePro <- ifelse(datasetOriginal$YearsCodePro == "Less than 1 year", 0.5, datasetOriginal$YearsCodePro)
 datasetOriginal$YearsCodePro <- ifelse(datasetOriginal$YearsCodePro == "More than 50 years", 51, datasetOriginal$YearsCodePro)
+datasetOriginal$WorkExp <- ifelse(is.na(datasetOriginal$WorkExp), datasetOriginal$YearsCodePro, datasetOriginal$WorkExp)
 
 datasetOriginal <- head(datasetOriginal[, columns], nrow(datasetOriginal))
 datasetOriginal <- na.omit(datasetOriginal)
@@ -81,8 +82,23 @@ df_limpo$Age <- as.factor(df_limpo$Age)
 df_limpo$WorkExp <- as.integer(df_limpo$WorkExp)
 df_limpo$RemoteWork <- as.factor(df_limpo$RemoteWork)
 df_limpo$Country <- as.factor(df_limpo$Country)
-df_limpo$LearnCode <- as.array(df_limpo$LearnCode)
-df_limpo$LanguageHaveWorkedWith <- as.array(df_limpo$LanguageHaveWorkedWith)
+```
+
+# Transformando os intervalos em numeros
+```{r}
+
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "I don’t know"] <- "0"
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "2 to 9 employees"] <- "1"
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "10 to 19 employees"] <- "2"
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "20 to 99 employees"] <- "3"
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "100 to 499 employees"] <- "4"
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "500 to 999 employees"] <- "5"
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "1,000 to 4,999 employees"] <- "6"
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "5,000 to 9,999 employees"] <- "7"
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "10,000 or more employees"] <- "8"
+df_limpo_est$OrgSizeNum[df_limpo_est$OrgSize == "Just me - I am a freelancer, sole proprietor, etc."] <- "9"
+
+df_limpo_est$OrgSizeNum <- as.integer(df_limpo_est$OrgSizeNum)
 ```
 
 # Remover os NA
