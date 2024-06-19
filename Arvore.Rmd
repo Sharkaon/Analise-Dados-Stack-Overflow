@@ -58,5 +58,23 @@ modelo_salario
 # Plot da Árvore
 ```{r}
 arvore_decisao <- rpart.plot(modelo_salario, type = 2)
-# arvore_decisao
+```
+
+
+# Criando a Arvore de decisao
+#
+```{r}
+modelo_salario_idade <- rpart(ConvertedCompYearly~YearsCodePro+OrgSize+Age+RemoteWork,
+                                  data=datasetTree,
+                                  method="class",
+                                  control=rpart.control(minsplit = 1,
+                                                        xval = 9),
+                                  parms=list(split="Information"))
+modelo_salario_idade
+```
+
+
+# Plot da Árvore
+```{r}
+arvore_decisao_idade <- rpart.plot(modelo_salario_idade, type = 2)
 ```

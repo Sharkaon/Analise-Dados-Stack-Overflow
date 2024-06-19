@@ -23,9 +23,7 @@ datasetOriginal <- read.csv2('./datasets/survey_results_public.csv', header = TR
 
 # Definindo constantes
 ```{r}
-columns <- c("Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "ConvertedCompYearly")
-# Limit para sample para que a execução da árvore não fique muito pesada
-limit <- 50
+columns <- c("Country", "YearsCode", "YearsCodePro", "OrgSize", "DevType", "EdLevel", "Age", "WorkExp", "RemoteWork", "LearnCode", "LanguageHaveWorkedWith", "ConvertedCompYearly")
 ```
 
 
@@ -35,7 +33,7 @@ datasetOriginal$YearsCodePro <- ifelse(is.na(datasetOriginal$YearsCodePro), data
 datasetOriginal$YearsCodePro <- as.factor(datasetOriginal$YearsCodePro)
 datasetOriginal$YearsCodePro <- ifelse(datasetOriginal$YearsCodePro == "Less than 1 year", 0.5, datasetOriginal$YearsCodePro)
 datasetOriginal$YearsCodePro <- ifelse(datasetOriginal$YearsCodePro == "More than 50 years", 51, datasetOriginal$YearsCodePro)
-datasetOriginal$WorkExp <- ifelse(is.na(datasetOriginal$WorkExp), datasetOriginal$YearsCodePro, datasetOriginal$WorkExp)
+# datasetOriginal$WorkExp <- ifelse(is.na(datasetOriginal$WorkExp), datasetOriginal$YearsCodePro, datasetOriginal$WorkExp)
 
 datasetOriginal <- head(datasetOriginal[, columns], nrow(datasetOriginal))
 datasetOriginal <- na.omit(datasetOriginal)
