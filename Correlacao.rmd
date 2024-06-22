@@ -1,0 +1,70 @@
+# Instalando os pacotes
+```{r}
+# install.packages("rpart")
+library(rpart)
+# install.packages("rpart.plot")
+library(rpart.plot)
+# install.packages("dplyr")
+library(dplyr)
+# install.packages("outliers")
+library(outliers)
+# install.packages("base")
+library(base)
+# install.packages("base")
+library(ggplot2)
+# install.packages("santoku")
+library(santoku)
+# install.packages("ggstatsplot")
+library(ggstatsplot)
+# install.packages("insight")
+library(insight)
+# install.packages("corrplot")
+library(corrplot)
+# install.packages("corrplot")
+library(GGally)
+
+```
+Preparando dataset para correlação
+```{r}
+df_cor_completo <- df_limpo[, c("YearsCodePro", "Country", "OrgSize", "OrgSizeNum", "DevType", "Age", "WorkExp", "ConvertedCompYearly")]
+
+df_cor_completo$Country <- as.factor(df_cor_completo$Country)
+df_cor_completo$CountryNum <- as.numeric(df_cor_completo$Country)
+df_cor_completo$OrgSize <- as.factor(df_cor_completo$OrgSize)
+df_cor_completo$OrgSizeNum <- as.numeric(df_cor_completo$OrgSizeNum)
+df_cor_completo$YearsCodePro <- as.numeric(df_cor_completo$YearsCodePro)
+df_cor_completo$DevType <- as.factor(df_cor_completo$DevType)
+df_cor_completo$DevTypeNum <- as.numeric(df_cor_completo$DevType)
+df_cor_completo$Age <- as.factor(df_cor_completo$Age)
+df_cor_completo$AgeNum <- as.numeric(df_cor_completo$Age)
+df_cor_completo$WorkExp <- as.numeric(df_cor_completo$WorkExp)
+df_cor_completo$ConvertedCompYearly <- as.numeric(df_cor_completo$ConvertedCompYearly)
+
+df_cor_completo <- df_cor_completo[, c("Country", "CountryNum", "OrgSize", "OrgSizeNum", "YearsCodePro", "DevType", "DevTypeNum", "Age", "AgeNum", "WorkExp", "ConvertedCompYearly")]
+df_cor <- df_cor_completo[, c("CountryNum", "OrgSizeNum", "YearsCodePro", "DevTypeNum", "AgeNum", "WorkExp", "ConvertedCompYearly")]
+df_cor_factor <- df_cor_completo[, c("Country", "OrgSize", "YearsCodePro", "DevType", "Age", "WorkExp", "ConvertedCompYearly")]
+
+```
+
+# Calcular a correlação
+```{r}
+correlacao <- cor(df_cor)
+correlacao
+```
+
+```{r}
+pairs(df_cor)
+corrplot(correlacao, method = "number")
+```
+
+```{r}
+ggpairs(df_cor)
+```
+
+```{r}
+ggpairs(df_cor_factor, lower = list(continuous = "smooth"), cardinality_threshold=33)
+```
+
+```{r}
+ggpairs(df_cor, lower = list(continuous = "smooth"), cardinality_threshold=33)
+```
