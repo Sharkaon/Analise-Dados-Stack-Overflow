@@ -92,9 +92,7 @@ summary(df_original_est)
 ```{r}
 ggplot(df_limpo, aes(ConvertedCompYearly, YearsCodePro)) +
   geom_point(aes(col=Country), size=1)
+
 ggplot(df_limpo, aes(ConvertedCompYearly, YearsCodePro)) +
   geom_point(aes(col=OrgSize), size=1)
-ggplot(df_limpo, aes(ConvertedCompYearly, YearsCodePro)) +
-  geom_point(aes(col=Age), size=1)
-
 ```
